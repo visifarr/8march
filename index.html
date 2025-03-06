@@ -44,16 +44,6 @@
             margin-top: 20px;
             font-style: italic;
         }
-        .music-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #d63384;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -65,13 +55,7 @@
         }
     </style>
     <script>
-        let images = [
-            "1.jpg",
-            "2.jpg",
-            "3.jpg",
-            "4.jpg",
-            "5.jpg"
-        ];
+        let images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
         let index = 0;
 
         function changeBackground() {
@@ -83,6 +67,11 @@
     </script>
 </head>
 <body>
+    <audio autoplay loop>
+        <source src="Hotel.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+
     <div class="container">
         <h1>С 8 Марта!</h1>
         <p>Мы познакомились в Роплоксе, и это было одним из самых лучших событий в моей жизни..</p>
@@ -93,11 +82,6 @@
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
         <div class="heart">❤️</div>
         <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
-        
-        <!-- Ссылка на песню -->
-        <a href="https://www.musixmatch.com/lyrics/Montell-Fish/Hotel?utm_source=application&utm_campaign=api&utm_medium=musixmatch-android%3A552993462" target="_blank" class="music-link">
-            ▶ Послушать Montell Fish – Hotel
-        </a>
     </div>
 </body>
 </html>
