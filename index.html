@@ -59,8 +59,15 @@
         let index = 0;
         
         function changeBackground() {
-            index = (index + 1) % images.length;
-            document.body.style.backgroundImage = `url('${images[index]}')`;
+            let img = new Image();
+            img.src = images[index];
+            img.onload = function() {
+                document.body.style.backgroundImage = `url('${images[index]}')`;
+                index = (index + 1) % images.length;
+            };
+            img.onerror = function() {
+                console.error("Ошибка загрузки:", images[index]);
+            };
         }
         
         setInterval(changeBackground, 5000);
