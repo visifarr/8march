@@ -3,33 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>С 8 Марта Я хочу чтобы этот день для тебя стал самым особенным и самым классным на этом свете, ты, тот самый человек, который мне нужен, я не хочу чтобы ты покидала меня.!</title>
+    <title>С 8 Марта!</title>
     <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            background: url('1.jpg') no-repeat center center/cover;
             text-align: center;
             font-family: Arial, sans-serif;
+            padding: 20px;
+            transition: background 1s ease-in-out;
         }
         .container {
-            position: relative;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             animation: fadeIn 2s ease-in-out;
+            max-width: 600px;
         }
         h1 {
-            font-size: 3em;
-            color: white;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+            color: #d63384;
+        }
+        p {
+            font-size: 1.2em;
+            color: #333;
+            line-height: 1.5;
         }
         .heart {
-            color: red;
             font-size: 50px;
+            color: red;
             animation: pulse 1.5s infinite;
         }
+        .ps {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 20px;
+            font-style: italic;
+        }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-50px); }
+            from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes pulse {
@@ -38,11 +54,26 @@
             100% { transform: scale(1); }
         }
     </style>
+    <script>
+        let images = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
+        let index = 0;
+        setInterval(() => {
+            document.body.style.backgroundImage = `url('${images[index]}')`;
+            index = (index + 1) % images.length;
+        }, 5000);
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>С 8 Марта!</h1>
+        <p>Мы познакомились в Роплоксе, и это было одним из самых лучших событий в моей жизни..</p>
+        <p>Я ни о чём не сожалею и верю, что у нас всё получится, если конечно мы будем стараться:3.</p>
+        <p>Надеюсь, что мы сможем встретиться, кисунь!^^</p>
+        <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
+        <p>Поэтому не покидай меня и давай стараться дальше!</p>
+        <p><b>С 8 марта, дорогуша моя! :33</b></p>
         <div class="heart">❤️</div>
+        <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
     </div>
 </body>
 </html>
