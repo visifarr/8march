@@ -14,7 +14,7 @@
             text-align: center;
             font-family: Arial, sans-serif;
             padding: 20px;
-            transition: background 1s ease-in-out;
+            transition: background-image 1s ease-in-out;
         }
         .container {
             background: rgba(255, 255, 255, 0.8);
@@ -57,10 +57,13 @@
     <script>
         let images = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
         let index = 0;
-        setInterval(() => {
-            document.body.style.backgroundImage = `url('${images[index]}')`;
+        
+        function changeBackground() {
             index = (index + 1) % images.length;
-        }, 5000);
+            document.body.style.backgroundImage = `url('${images[index]}')`;
+        }
+        
+        setInterval(changeBackground, 5000);
     </script>
 </head>
 <body>
