@@ -10,7 +10,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url('1.jpg') no-repeat center center/cover;
+            background: url('https://visifarr.github.io/8march/1.jpg') no-repeat center center/cover;
             text-align: center;
             font-family: Arial, sans-serif;
             padding: 20px;
@@ -55,21 +55,20 @@
         }
     </style>
     <script>
-        let images = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
+        let images = [
+            "https://visifarr.github.io/8march/1.jpg",
+            "https://visifarr.github.io/8march/2.jpg",
+            "https://visifarr.github.io/8march/3.jpg",
+            "https://visifarr.github.io/8march/4.jpg",
+            "https://visifarr.github.io/8march/5.jpg"
+        ];
         let index = 0;
-        
+
         function changeBackground() {
-            let img = new Image();
-            img.src = images[index];
-            img.onload = function() {
-                document.body.style.backgroundImage = `url('${images[index]}')`;
-                index = (index + 1) % images.length;
-            };
-            img.onerror = function() {
-                console.error("Ошибка загрузки:", images[index]);
-            };
+            document.body.style.backgroundImage = `url('${images[index]}')`;
+            index = (index + 1) % images.length;
         }
-        
+
         setInterval(changeBackground, 5000);
     </script>
 </head>
