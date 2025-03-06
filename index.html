@@ -38,6 +38,7 @@
             position: relative;
             cursor: pointer;
             font-weight: bold;
+            color: red;
         }
         .highlight::after {
             content: "";
@@ -54,7 +55,22 @@
             from { opacity: 1; }
             to { opacity: 0.5; }
         }
-        #popup {
+        #envelope {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            color: red;
+            cursor: pointer;
+            font-weight: bold;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #message {
             display: none;
             position: fixed;
             top: 50%;
@@ -67,41 +83,52 @@
             text-align: center;
             font-size: 1.4em;
             color: #333;
-            cursor: pointer;
+        }
+        .ps {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 20px;
+            font-style: italic;
         }
     </style>
     <script>
-        function showPopup(message) {
-            let popup = document.getElementById("popup");
-            popup.innerText = message;
-            popup.style.display = "block";
+        function showEnvelope(message) {
+            let envelope = document.getElementById("envelope");
+            envelope.setAttribute("data-message", message);
+            envelope.style.display = "block";
         }
 
-        function hidePopup() {
-            document.getElementById("popup").style.display = "none";
+        function openMessage() {
+            let envelope = document.getElementById("envelope");
+            let message = document.getElementById("message");
+            message.innerText = envelope.getAttribute("data-message");
+            envelope.style.display = "none";
+            message.style.display = "block";
+        }
+
+        function hideMessage() {
+            document.getElementById("message").style.display = "none";
         }
     </script>
 </head>
-<body onclick="hidePopup()">
+<body onclick="hideMessage()">
     <audio autoplay loop>
         <source src="Hotel.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="showPopup('Ой, ты нашла меня... Ну и ладно... Главное, я люблю тебя!')">П</span>локсе, и это было одним из самых лучших событий в моей жизни..</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="showEnvelope('Ой, ты нашла меня... Ну и ладно... Главное, я люблю тебя!')">П</span>локсе, и это было одним из самых лучших событий в моей жизни..</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится, если конечно мы будем стараться:3.</p>
-        <p>Надеюсь, что мы сможем встретиться, кисунь!^^</p>
+        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="showEnvelope('Ойой поаккуратнее, дамочка... я ослеплён твоей красотой 😵')">с</span>унь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
-        <p>Поэтому не покидай меня и давай стараться дальше!</p>
+        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="showEnvelope('Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
         <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
     </div>
 
-    <p>Дополнительные пасхалки:</p>
-    <p>Что-то интересное в слове <span class="highlight" onclick="showPopup('Ойой поаккуратнее, дамочка... я ослеплён твоей красотой 😵')">Т</span>ы</p>
-    <p>И ещё одна тут: <span class="highlight" onclick="showPopup('Йоу, что за бомба-красотка, еее... 🫠')">К</span>расотка</p>
+    <div id="envelope" onclick="openMessage()">×</div>
 
-    <div id="popup" onclick="hidePopup()"></div>
+    <div id="message" onclick="hideMessage()"></div>
 </body>
 </html>
