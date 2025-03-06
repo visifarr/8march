@@ -38,7 +38,7 @@
             position: relative;
             cursor: pointer;
             font-weight: bold;
-            color: red;
+            color: #b0b0b0; /* Бело-серый цвет */
         }
         .highlight::after {
             content: "";
@@ -102,7 +102,6 @@
             let envelope = document.getElementById("envelope");
             let message = document.getElementById("message");
             message.innerText = envelope.getAttribute("data-message");
-            envelope.style.display = "none";
             message.style.display = "block";
         }
 
@@ -111,7 +110,7 @@
         }
     </script>
 </head>
-<body onclick="hideMessage()">
+<body>
     <audio autoplay loop>
         <source src="Hotel.mp3" type="audio/mpeg">
     </audio>
