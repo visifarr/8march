@@ -17,12 +17,13 @@
             transition: background-image 1s ease-in-out;
         }
         .container {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.5);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             animation: fadeIn 2s ease-in-out;
             max-width: 600px;
+            position: relative;
         }
         h1 {
             font-size: 2.5em;
@@ -33,10 +34,55 @@
             color: #333;
             line-height: 1.5;
         }
-        .heart {
-            font-size: 50px;
+        .highlight {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .highlight::after {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            animation: blink 1.5s infinite alternate;
+        }
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.5; }
+        }
+        #envelope {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
             color: red;
-            animation: pulse 1.5s infinite;
+            cursor: pointer;
+            font-weight: bold;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-size: 1.4em;
+            color: #333;
         }
         .ps {
             font-size: 0.9em;
@@ -44,26 +90,16 @@
             margin-top: 20px;
             font-style: italic;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
     </style>
     <script>
-        let images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
-        let index = 0;
-
-        function changeBackground() {
-            document.body.style.backgroundImage = `url('${images[index]}')`;
-            index = (index + 1) % images.length;
+        function showEnvelope() {
+            document.getElementById("envelope").style.display = "block";
         }
 
-        setInterval(changeBackground, 5000);
+        function openMessage() {
+            document.getElementById("envelope").style.display = "none";
+            document.getElementById("message").style.display = "block";
+        }
     </script>
 </head>
 <body>
@@ -73,14 +109,20 @@
 
     <div class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Роплоксе, и это было одним из самых лучших событий в моей жизни..</p>
+        <p>Мы познакомились в <span class="highlight" onclick="showEnvelope()">РоПлоксе</span>, и это было одним из самых лучших событий в моей жизни..</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится, если конечно мы будем стараться:3.</p>
         <p>Надеюсь, что мы сможем встретиться, кисунь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
         <p>Поэтому не покидай меня и давай стараться дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
-        <div class="heart">❤️</div>
         <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
+    </div>
+
+    <div id="envelope" onclick="openMessage()">×</div>
+
+    <div id="message">
+        <p>Ой, ты нашла меня... Ну и ладно...</p>
+        <p><b>Главное, я люблю тебя!</b></p>
     </div>
 </body>
 </html>
