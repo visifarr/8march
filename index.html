@@ -35,8 +35,6 @@
         #clicker-container {
             display: none;
             background: white;
-            background-image: linear-gradient(45deg, red 25%, transparent 25%, transparent 50%, red 50%, red 75%, transparent 75%, transparent);
-            background-size: 50px 50px;
             position: fixed;
             top: 0;
             left: 0;
@@ -44,35 +42,46 @@
             height: 100%;
             padding-top: 50px;
         }
-        .big-choco {
-            width: 100px;
-            height: 100px;
-            background: url('choco_gray.png') no-repeat center/cover;
-            border: none;
-            cursor: pointer;
-            margin: 10px;
-        }
         .music-btn {
-            width: 100px;
-            height: 100px;
-            background: url('music_gray.png') no-repeat center/cover;
-            border: none;
-            cursor: pointer;
-        }
-        .upgrade-btn {
-            display: block;
-            margin: 10px auto;
-            padding: 15px;
-            font-size: 1.2em;
-            border: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
             background: #d63384;
             color: white;
+            border: none;
             cursor: pointer;
-            border-radius: 5px;
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: red;
+            top: 0;
+            left: 50%;
+            opacity: 0.8;
+            animation: fall 2s linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 2px solid #d63384;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 10;
         }
     </style>
     <script>
-        let audio, score = 0, clickPower = 1, workers = 0, prestige = 0;
+        let audio, score = 0;
 
         function toggleMusic() {
             if (!audio) {
@@ -97,15 +106,37 @@
                 content.style.display = "block";
             }
         }
+
+        function showConfetti() {
+            for (let i = 0; i < 50; i++) {
+                let confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDuration = (Math.random() * 2 + 1) + "s";
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+
+        function showPopup(text) {
+            let popup = document.getElementById("popup");
+            popup.innerHTML = text;
+            popup.style.display = "block";
+            showConfetti();
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
     </script>
 </head>
-<body>
-    <button class="big-choco" onclick="toggleClicker()"></button>
-    <button class="music-btn" onclick="toggleMusic()"></button>
+<body onclick="closePopup()">
+    <button class="music-btn" onclick="toggleMusic()">Вкл/Выкл</button>
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="alert('Код: 11524')">П</span>локсе, и это было одним из лучших событий в моей жизни...</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="showPopup('Первая пасхалка!')">П</span>локсе, и это было одним из лучших событий в моей жизни...</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
@@ -114,11 +145,10 @@
     <div id="clicker-container">
         <h2>🍫 Шоколадный кликер</h2>
         <p id="score">Шоколадок: 0</p>
-        <p id="choco-clicker" onclick="addChocolate()">🍫</p>
-        <button class="upgrade-btn" onclick="buyUpgrade()">Улучшить клик</button>
-        <button class="upgrade-btn" onclick="hireWorker()">Нанять работника</button>
-        <button class="upgrade-btn" onclick="prestigeUpgrade()">Престиж</button>
+        <p id="choco-clicker" onclick="score += 1; document.getElementById('score').innerText = 'Шоколадок: ' + score;">🍫</p>
         <button onclick="toggleClicker()">Назад</button>
     </div>
+
+    <div id="popup" class="popup"></div>
 </body>
 </html>
