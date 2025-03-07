@@ -10,7 +10,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url('3.jpg') no-repeat center center/cover;
+            background: url('2.jpg') no-repeat center center/cover;
             text-align: center;
             font-family: Arial, sans-serif;
             padding: 20px;
@@ -47,15 +47,8 @@
             position: relative;
             z-index: 1;
         }
-        h1 {
-            font-size: 2.5em;
-            color: #d63384;
-        }
-        p {
-            font-size: 1.2em;
-            color: #333;
-            line-height: 1.5;
-        }
+        h1 { font-size: 2.5em; color: #d63384; }
+        p { font-size: 1.2em; color: #333; line-height: 1.5; }
         .highlight {
             cursor: pointer;
             font-weight: bold;
@@ -83,7 +76,9 @@
         #clicker-container {
             display: none;
             text-align: center;
-            background: white url('choco-bg.jpg') repeat;
+            background: white;
+            background-image: linear-gradient(45deg, red 25%, transparent 25%, transparent 50%, red 50%, red 75%, transparent 75%, transparent);
+            background-size: 50px 50px;
         }
         #choco-clicker {
             font-size: 3em;
@@ -106,10 +101,13 @@
         .easter-egg {
             position: fixed;
             background: white;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             display: none;
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 300px;
         }
     </style>
     <script>
@@ -175,11 +173,14 @@
             let egg = document.getElementById(id);
             egg.textContent = text;
             egg.style.display = "block";
+            egg.style.top = "50%";
+            egg.style.left = "50%";
+            egg.style.transform = "translate(-50%, -50%)";
         }
 
         document.addEventListener("click", (e) => {
-            if (e.target.classList.contains("easter-egg")) {
-                e.target.style.display = "none";
+            if (!e.target.classList.contains("highlight")) {
+                document.querySelectorAll(".easter-egg").forEach(egg => egg.style.display = "none");
             }
         });
     </script>
