@@ -14,7 +14,7 @@
             text-align: center;
             font-family: Arial, sans-serif;
             padding: 20px;
-            transition: background-image 1s ease-in-out;
+            position: relative;
             overflow: hidden;
         }
         .container {
@@ -25,6 +25,7 @@
             animation: fadeIn 2s ease-in-out;
             max-width: 600px;
             position: relative;
+            z-index: 1;
         }
         h1 {
             font-size: 2.5em;
@@ -39,16 +40,7 @@
             position: relative;
             cursor: pointer;
             font-weight: bold;
-            color: #b0b0b0; /* Бело-серый цвет */
-        }
-        .highlight::after {
-            content: " ×";
-            font-size: 1em;
-            color: red;
-            font-weight: bold;
-            position: absolute;
-            top: -5px;
-            right: -10px;
+            color: #b0b0b0;
         }
         #message {
             display: none;
@@ -63,16 +55,8 @@
             text-align: center;
             font-size: 1.4em;
             color: #333;
-            position: relative;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: red;
-            font-weight: bold;
+            position: fixed;
+            z-index: 2;
         }
         .ps {
             font-size: 0.9em;
@@ -82,14 +66,15 @@
         }
         #music-btn {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            top: 10px;
+            right: 10px;
             background: rgba(0, 0, 0, 0.7);
             color: white;
             border: none;
             padding: 10px;
             cursor: pointer;
             border-radius: 5px;
+            z-index: 3;
         }
         .confetti {
             position: fixed;
@@ -121,7 +106,7 @@
 
         function showMessage(message) {
             let messageBox = document.getElementById("message");
-            messageBox.innerHTML = `<span class="close-btn" onclick="hideMessage()">×</span>${message}`;
+            messageBox.innerHTML = message;
             messageBox.style.display = "block";
             launchConfetti();
         }
@@ -134,13 +119,20 @@
             for (let i = 0; i < 30; i++) {
                 let confetti = document.createElement("div");
                 confetti.classList.add("confetti");
-                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.left = Math.random() > 0.5 ? Math.random() * 10 + "vw" : Math.random() * 10 + 90 + "vw";
+                confetti.style.top = "-10vh";
                 confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
                 confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 document.body.appendChild(confetti);
                 setTimeout(() => confetti.remove(), 3000);
             }
         }
+
+        document.addEventListener("click", function(event) {
+            if (event.target.id !== "message") {
+                hideMessage();
+            }
+        });
     </script>
 </head>
 <body>
