@@ -37,10 +37,9 @@
             line-height: 1.5;
         }
         .highlight {
-            position: relative;
             cursor: pointer;
             font-weight: bold;
-            color: #b0b0b0;
+            color: #d63384;
         }
         #message {
             display: none;
@@ -55,7 +54,6 @@
             text-align: center;
             font-size: 1.4em;
             color: #333;
-            position: fixed;
             z-index: 2;
         }
         .ps {
@@ -119,7 +117,7 @@
             for (let i = 0; i < 30; i++) {
                 let confetti = document.createElement("div");
                 confetti.classList.add("confetti");
-                confetti.style.left = Math.random() > 0.5 ? Math.random() * 10 + "vw" : Math.random() * 10 + 90 + "vw";
+                confetti.style.left = Math.random() * 100 + "vw";
                 confetti.style.top = "-10vh";
                 confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
                 confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
@@ -129,7 +127,7 @@
         }
 
         document.addEventListener("click", function(event) {
-            if (event.target.id !== "message") {
+            if (!event.target.classList.contains("highlight")) {
                 hideMessage();
             }
         });
