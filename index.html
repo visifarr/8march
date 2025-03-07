@@ -60,20 +60,6 @@
             cursor: pointer;
             font-weight: bold;
             color: #d63384;
-            position: relative;
-        }
-        .highlight::after {
-            content: '\2716';
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            font-size: 0.8em;
-            color: red;
-            cursor: pointer;
-            display: none;
-        }
-        .highlight:hover::after {
-            display: inline;
         }
         .ps {
             font-size: 0.9em;
@@ -97,17 +83,14 @@
         #clicker-container {
             display: none;
             text-align: center;
-            background: white url('choco-pattern.jpg') repeat;
-            width: 100vw;
+            background: url('choco-pattern.jpg') repeat;
+            width: 100%;
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            z-index: 5;
+            padding-top: 50px;
         }
         #choco-clicker {
             font-size: 4em;
@@ -115,6 +98,7 @@
         }
         #score {
             font-size: 1.5em;
+            color: #d63384;
         }
     </style>
     <script>
@@ -145,7 +129,7 @@
             let clicker = document.getElementById("clicker-container");
             if (clicker.style.display === "none") {
                 content.style.display = "none";
-                clicker.style.display = "flex";
+                clicker.style.display = "block";
             } else {
                 clicker.style.display = "none";
                 content.style.display = "block";
@@ -170,11 +154,11 @@
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight">П</span>локсе, и это было одним из лучших событий в моей жизни..</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="document.getElementById('hidden1').style.display='block'">П</span>локсе, и это было одним из лучших событий в моей жизни..</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
-        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight">с</span>унь!^^</p>
+        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="document.getElementById('hidden2').style.display='block'">с</span>унь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
-        <p>Поэтому не покидай меня и давай стара<span class="highlight">т</span>ься дальше!</p>
+        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="document.getElementById('hidden3').style.display='block'">т</span>ься дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
         <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
     </div>
