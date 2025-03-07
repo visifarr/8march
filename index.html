@@ -44,15 +44,20 @@
             height: 100%;
             padding-top: 50px;
         }
-        #choco-clicker {
-            font-size: 4em;
+        .big-choco {
+            width: 100px;
+            height: 100px;
+            background: url('choco_gray.png') no-repeat center/cover;
+            border: none;
             cursor: pointer;
-            display: inline-block;
-            padding: 20px;
-            border: 2px solid black;
+            margin: 10px;
         }
-        #score {
-            font-size: 1.5em;
+        .music-btn {
+            width: 100px;
+            height: 100px;
+            background: url('music_gray.png') no-repeat center/cover;
+            border: none;
+            cursor: pointer;
         }
         .upgrade-btn {
             display: block;
@@ -65,30 +70,9 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        .easter-egg {
-            position: fixed;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            display: none;
-            font-size: 1.2em;
-            text-align: center;
-            max-width: 300px;
-            z-index: 5;
-        }
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: red;
-            opacity: 0.7;
-            z-index: 9999;
-        }
     </style>
     <script>
         let audio, score = 0, clickPower = 1, workers = 0, prestige = 0;
-        let maxClickPower = 5, maxWorkers = 5;
 
         function toggleMusic() {
             if (!audio) {
@@ -113,83 +97,15 @@
                 content.style.display = "block";
             }
         }
-
-        function addChocolate() {
-            score += clickPower;
-            document.getElementById("score").textContent = "Шоколадок: " + score;
-        }
-
-        function buyUpgrade() {
-            let cost = 50;
-            if (score >= cost && clickPower < maxClickPower + prestige * 5) {
-                score -= cost;
-                clickPower++;
-                document.getElementById("score").textContent = "Шоколадок: " + score;
-            }
-        }
-
-        function hireWorker() {
-            let cost = 100;
-            if (score >= cost && workers < maxWorkers + prestige * 5) {
-                score -= cost;
-                workers++;
-                setInterval(() => {
-                    score += workers;
-                    document.getElementById("score").textContent = "Шоколадок: " + score;
-                }, 1000);
-            }
-        }
-
-        function prestigeUpgrade() {
-            if (score >= 1000) {
-                score = 0;
-                clickPower = 1;
-                workers = 0;
-                prestige++;
-                document.getElementById("score").textContent = "Шоколадок: " + score;
-            }
-        }
-
-        function showEasterEgg(id, text) {
-            let egg = document.getElementById(id);
-            egg.textContent = text;
-            egg.style.display = "block";
-            egg.style.top = "50%";
-            egg.style.left = "50%";
-            egg.style.transform = "translate(-50%, -50%)";
-            addConfetti();
-        }
-
-        function addConfetti() {
-            for (let i = 0; i < 50; i++) {
-                let confetti = document.createElement("div");
-                confetti.className = "confetti";
-                confetti.style.left = Math.random() * window.innerWidth + "px";
-                confetti.style.top = "-10px";
-                confetti.style.background = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
-                document.body.appendChild(confetti);
-                let speed = Math.random() * 3 + 2;
-                let animation = confetti.animate([
-                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)` }
-                ], { duration: speed * 1000 });
-                animation.onfinish = () => confetti.remove();
-            }
-        }
-
-        document.addEventListener("click", (e) => {
-            if (!e.target.classList.contains("highlight")) {
-                document.querySelectorAll(".easter-egg").forEach(egg => egg.style.display = "none");
-            }
-        });
     </script>
 </head>
 <body>
-    <button onclick="toggleMusic()">Вкл/Выкл музыку</button>
-    <button onclick="toggleClicker()">Играть</button>
+    <button class="big-choco" onclick="toggleClicker()"></button>
+    <button class="music-btn" onclick="toggleMusic()"></button>
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="showEasterEgg('egg1', 'Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни...</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="alert('Код: 11524')">П</span>локсе, и это было одним из лучших событий в моей жизни...</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
@@ -204,7 +120,5 @@
         <button class="upgrade-btn" onclick="prestigeUpgrade()">Престиж</button>
         <button onclick="toggleClicker()">Назад</button>
     </div>
-
-    <div id="egg1" class="easter-egg"></div>
 </body>
 </html>
