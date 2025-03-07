@@ -3,162 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>С 8 Марта!</title>
+    <title>Завод Шоколадок Малышки</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: url('1.jpg') no-repeat center center/cover;
+            background-color: white;
+            background-image: url('chocolate_pattern.jpg');
+            background-size: cover;
             text-align: center;
             font-family: Arial, sans-serif;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
         }
-        #code-screen {
+        h1 {
+            color: #ff4d79;
+        }
+        .clicker-button {
+            font-size: 24px;
+            padding: 20px;
+            background-color: #d2691e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .clicker-button:hover {
+            background-color: #a0522d;
+        }
+        .counter {
+            font-size: 20px;
+            margin: 10px;
+            color: #ff4d79;
+        }
+        .upgrade-button {
+            font-size: 18px;
+            padding: 10px;
+            background-color: #ff4d79;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .upgrade-button:hover {
+            background-color: #e04060;
+        }
+        .hidden {
+            display: none;
+        }
+        .password-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10;
+            flex-direction: column;
         }
-        #code-input {
-            font-size: 1.5em;
+        .password-input {
+            font-size: 20px;
             padding: 10px;
-            text-align: center;
         }
-        .container {
-            display: none;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 2s ease-in-out;
-            max-width: 600px;
-            position: relative;
-            z-index: 1;
-        }
-        h1 {
-            font-size: 2.5em;
-            color: #d63384;
-        }
-        p {
-            font-size: 1.2em;
-            color: #333;
-            line-height: 1.5;
-        }
-        .highlight {
-            cursor: pointer;
-            font-weight: bold;
-            color: #d63384;
-        }
-        .ps {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 20px;
-            font-style: italic;
-        }
-        #music-btn, #choco-btn {
-            position: fixed;
-            top: 10px;
-            background: rgba(0, 0, 0, 0.7);
+        .submit-button {
+            font-size: 18px;
+            padding: 10px;
+            background-color: #ff4d79;
             color: white;
             border: none;
-            padding: 10px;
             cursor: pointer;
-            border-radius: 5px;
-            z-index: 3;
-        }
-        #music-btn { right: 10px; }
-        #choco-btn { left: 10px; }
-        #clicker-container {
-            display: none;
-            text-align: center;
-        }
-        #choco-clicker {
-            font-size: 3em;
-            cursor: pointer;
-        }
-        #score {
-            font-size: 1.5em;
+            border-radius: 10px;
+            margin-top: 10px;
         }
     </style>
-    <script>
-        let audio, score = 0;
-
-        function checkCode() {
-            let input = document.getElementById("code-input").value;
-            if (input === "11524") {
-                document.getElementById("code-screen").style.display = "none";
-                document.getElementById("content").style.display = "block";
-            }
-        }
-
-        function toggleMusic() {
-            if (!audio) {
-                audio = new Audio('Hotel.mp3');
-                audio.loop = true;
-            }
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
-        }
-
-        function toggleClicker() {
-            let content = document.getElementById("content");
-            let clicker = document.getElementById("clicker-container");
-            if (clicker.style.display === "none") {
-                content.style.display = "none";
-                clicker.style.display = "block";
-            } else {
-                clicker.style.display = "none";
-                content.style.display = "block";
-            }
-        }
-
-        function addChocolate() {
-            score++;
-            document.getElementById("score").textContent = "Шоколадок: " + score;
-        }
-    </script>
 </head>
 <body>
-    <div id="code-screen">
-        <h2>Введите код</h2>
-        <input id="code-input" type="password" maxlength="5">
-        <button onclick="checkCode()">ОК</button>
+    <div class="password-screen" id="passwordScreen">
+        <h1 style="color: white;">Введите код доступа</h1>
+        <input type="password" id="passwordInput" class="password-input" placeholder="Введите код">
+        <button class="submit-button" onclick="checkPassword()">Подтвердить</button>
     </div>
 
-    <button id="music-btn" onclick="toggleMusic()">🎵 Вкл/Выкл музыку</button>
-    <button id="choco-btn" onclick="toggleClicker()">🍫</button>
+    <h1>Завод Шоколадок Малышки</h1>
+    <p class="counter">Шоколадки: <span id="counter">0</span></p>
+    <button class="clicker-button" onclick="increaseCount()">🍫 Клик!</button>
+    <button class="upgrade-button" onclick="buyUpgrade()">Купить авто-кликер (10 шоколадок)</button>
+    
+    <script>
+        let count = 0;
+        let autoClickers = 0;
+        
+        function increaseCount() {
+            count++;
+            document.getElementById('counter').innerText = count;
+        }
+        
+        function buyUpgrade() {
+            if (count >= 10) {
+                count -= 10;
+                autoClickers++;
+                document.getElementById('counter').innerText = count;
+                setInterval(() => {
+                    count++;
+                    document.getElementById('counter').innerText = count;
+                }, 1000);
+            }
+        }
 
-    <div id="content" class="container">
-        <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="alert('Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни..</p>
-        <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
-        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="alert('Ойой поаккуратнее, дамочка... 😵')">с</span>унь!^^</p>
-        <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
-        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="alert('Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
-        <p><b>С 8 марта, дорогуша моя! :33</b></p>
-        <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
-    </div>
-
-    <div id="clicker-container">
-        <h2>🍫 Шоколадный кликер</h2>
-        <p id="score">Шоколадок: 0</p>
-        <p id="choco-clicker" onclick="addChocolate()">🍫</p>
-        <button onclick="toggleClicker()">Назад</button>
-    </div>
+        function checkPassword() {
+            let input = document.getElementById('passwordInput').value;
+            if (input === "11524") {
+                document.getElementById('passwordScreen').classList.add('hidden');
+            } else {
+                alert("Неверный код");
+            }
+        }
+    </script>
 </body>
 </html>
