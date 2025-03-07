@@ -10,7 +10,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url('2.jpg') no-repeat center center/cover;
+            background: url('3.jpg') no-repeat center center/cover;
             text-align: center;
             font-family: Arial, sans-serif;
             padding: 20px;
@@ -38,7 +38,7 @@
         }
         .container {
             display: none;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.5);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -83,59 +83,37 @@
         #clicker-container {
             display: none;
             text-align: center;
-            background: white;
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 11;
-        }
-        #clicker-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('шоколадный_фон.png') repeat;
-            opacity: 0.3;
-            z-index: -1;
-        }
-        .grid {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            height: calc(100% - 100px);
-            background: repeating-linear-gradient(0deg, red, red 2px, transparent 2px, transparent 50px),
-                        repeating-linear-gradient(90deg, red, red 2px, transparent 2px, transparent 50px);
-            z-index: 0;
+            background: white url('choco-bg.jpg') repeat;
         }
         #choco-clicker {
             font-size: 3em;
             cursor: pointer;
-            position: relative;
-            z-index: 2;
         }
         #score {
             font-size: 1.5em;
-            color: black;
         }
         .upgrade-btn {
-            margin-top: 10px;
+            display: block;
+            margin: 10px auto;
             padding: 10px;
-            background: #ff4d4d;
-            color: white;
             border: none;
+            background: #d63384;
+            color: white;
             cursor: pointer;
-            font-size: 1em;
             border-radius: 5px;
+        }
+        .hidden { display: none; }
+        .easter-egg {
+            position: fixed;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none;
         }
     </style>
     <script>
-        let audio, score = 0, clickValue = 1, autoClickers = 0;
+        let audio, score = 0, clickPower = 1, workers = 0;
 
         function checkCode() {
             let input = document.getElementById("code-input").value;
@@ -170,21 +148,40 @@
         }
 
         function addChocolate() {
-            score += clickValue;
+            score += clickPower;
             document.getElementById("score").textContent = "Шоколадок: " + score;
         }
 
-        function buyUpgrade(type) {
-            if (type === "click" && score >= 10) {
-                score -= 10;
-                clickValue++;
-            } else if (type === "auto" && score >= 20) {
-                score -= 20;
-                autoClickers++;
-                setInterval(() => { score++; document.getElementById("score").textContent = "Шоколадок: " + score; }, 1000);
+        function buyUpgrade(amount) {
+            if (score >= amount * 10) {
+                score -= amount * 10;
+                clickPower += amount;
+                document.getElementById("score").textContent = "Шоколадок: " + score;
             }
-            document.getElementById("score").textContent = "Шоколадок: " + score;
         }
+
+        function hireWorker() {
+            if (score >= 50) {
+                score -= 50;
+                workers++;
+                setInterval(() => {
+                    score++;
+                    document.getElementById("score").textContent = "Шоколадок: " + score;
+                }, 1000);
+            }
+        }
+
+        function showEasterEgg(id, text) {
+            let egg = document.getElementById(id);
+            egg.textContent = text;
+            egg.style.display = "block";
+        }
+
+        document.addEventListener("click", (e) => {
+            if (e.target.classList.contains("easter-egg")) {
+                e.target.style.display = "none";
+            }
+        });
     </script>
 </head>
 <body>
@@ -199,23 +196,26 @@
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight">П</span>локсе, и это было одним из лучших событий в моей жизни.</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="showEasterEgg('egg1', 'Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни..</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
-        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight">с</span>унь!^^</p>
+        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="showEasterEgg('egg2', 'Ойой поаккуратнее, дамочка... 😵')">с</span>унь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
-        <p>Поэтому не покидай меня и давай стара<span class="highlight">т</span>ься дальше!</p>
+        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="showEasterEgg('egg3', 'Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
         <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
     </div>
 
     <div id="clicker-container">
-        <div class="grid"></div>
-        <h2>Завод Шоколадок Малышки</h2>
+        <h2>🍫 Шоколадный кликер</h2>
         <p id="score">Шоколадок: 0</p>
         <p id="choco-clicker" onclick="addChocolate()">🍫</p>
-        <button class="upgrade-btn" onclick="buyUpgrade('click')">2+ 🍫</button>
-        <button class="upgrade-btn" onclick="buyUpgrade('auto')">👥 Автоклик</button>
+        <button class="upgrade-btn" onclick="buyUpgrade(1)">+2 🍫</button>
+        <button class="upgrade-btn" onclick="hireWorker()">👥 Работник</button>
         <button onclick="toggleClicker()">Назад</button>
     </div>
+
+    <div id="egg1" class="easter-egg"></div>
+    <div id="egg2" class="easter-egg"></div>
+    <div id="egg3" class="easter-egg"></div>
 </body>
 </html>
