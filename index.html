@@ -31,6 +31,11 @@
             align-items: center;
             z-index: 10;
         }
+        #code-input {
+            font-size: 1.5em;
+            padding: 10px;
+            text-align: center;
+        }
         .container {
             display: none;
             background: rgba(255, 255, 255, 0.5);
@@ -41,6 +46,16 @@
             max-width: 600px;
             position: relative;
             z-index: 1;
+        }
+        h1 { font-size: 2.5em; color: #d63384; }
+        p { font-size: 1.2em; color: #333; line-height: 1.5; }
+        .highlight {
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            background-color: #d63384;
+            padding: 2px 5px;
+            border-radius: 3px;
         }
         #music-btn, #choco-btn {
             position: fixed;
@@ -67,6 +82,33 @@
             height: 100%;
             padding-top: 50px;
         }
+        #choco-clicker {
+            font-size: 3em;
+            cursor: pointer;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            border: 3px solid #d63384;
+            display: inline-block;
+            text-align: center;
+            margin-top: auto;
+        }
+        #score {
+            font-size: 1.5em;
+        }
+        .upgrade-btn {
+            display: block;
+            width: 200px;
+            height: 50px;
+            font-size: 1.2em;
+            margin: 15px auto;
+            padding: 10px;
+            border: none;
+            background: #d63384;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
         .easter-egg {
             position: fixed;
             background: white;
@@ -81,7 +123,7 @@
         }
     </style>
     <script>
-        let audio, score = 0, clickPower = 1, workers = 0, prestige = 1, clickUpgrades = 0, workerUpgrades = 0;
+        let audio, score = 0, clickPower = 1, workers = 0, prestiges = 0;
 
         function checkCode() {
             let input = document.getElementById("code-input").value;
@@ -116,45 +158,7 @@
         }
 
         function addChocolate() {
-            score += clickPower * prestige;
-            updateScore();
-        }
-
-        function buyUpgrade() {
-            if (score >= 10 && clickUpgrades < 5) {
-                score -= 10;
-                clickPower += 1;
-                clickUpgrades++;
-                updateScore();
-            }
-        }
-
-        function hireWorker() {
-            if (score >= 50 && workerUpgrades < 5) {
-                score -= 50;
-                workers++;
-                workerUpgrades++;
-                setInterval(() => {
-                    score += prestige;
-                    updateScore();
-                }, 1000);
-                updateScore();
-            }
-        }
-
-        function buyPrestige() {
-            if (score >= 1000) {
-                score = 0;
-                clickPower = 1;
-                workers = 0;
-                clickUpgrades = 0;
-                workerUpgrades = 0;
-                prestige *= 2;
-                updateScore();
-            }
-        }
-
-        function updateScore() {
+            score += clickPower;
             document.getElementById("score").textContent = "Шоколадок: " + score;
         }
 
@@ -165,13 +169,8 @@
             egg.style.top = "50%";
             egg.style.left = "50%";
             egg.style.transform = "translate(-50%, -50%)";
+            egg.style.zIndex = "6";
         }
-
-        document.addEventListener("click", (e) => {
-            if (!e.target.classList.contains("highlight")) {
-                document.querySelectorAll(".easter-egg").forEach(egg => egg.style.display = "none");
-            }
-        });
     </script>
 </head>
 <body>
@@ -186,7 +185,7 @@
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="showEasterEgg('egg1', 'Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни.</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="showEasterEgg('egg1', 'Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни..</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
         <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="showEasterEgg('egg2', 'Ойой поаккуратнее, дамочка... 😵')">с</span>унь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
@@ -197,10 +196,7 @@
     <div id="clicker-container">
         <h2>🍫 Шоколадный кликер</h2>
         <p id="score">Шоколадок: 0</p>
-        <p id="choco-clicker" onclick="addChocolate()">🍫</p>
-        <button class="upgrade-btn" onclick="buyUpgrade()">+1 🍫 (макс 5)</button>
-        <button class="upgrade-btn" onclick="hireWorker()">👥 Работник (макс 5)</button>
-        <button class="upgrade-btn" onclick="buyPrestige()">💎 Престиж (1000 шоколадок)</button>
+        <div id="choco-clicker" onclick="addChocolate()">🍫</div>
         <button onclick="toggleClicker()">Назад</button>
     </div>
 
