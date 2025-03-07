@@ -22,32 +22,18 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 2s ease-in-out;
             max-width: 600px;
             position: relative;
-            z-index: 1;
         }
+        h1 { font-size: 2.5em; color: #d63384; }
+        p { font-size: 1.2em; color: #333; }
         .highlight {
             cursor: pointer;
             font-weight: bold;
             color: #d63384;
         }
-        .easter-egg {
-            position: fixed;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            font-size: 1.2em;
-            text-align: center;
-            max-width: 300px;
-            z-index: 5;
-            display: none;
-            color: red;
-        }
         #clicker-container {
             display: none;
-            text-align: center;
             background: white;
             background-image: linear-gradient(45deg, red 25%, transparent 25%, transparent 50%, red 50%, red 75%, transparent 75%, transparent);
             background-size: 50px 50px;
@@ -59,12 +45,18 @@
             padding-top: 50px;
         }
         #choco-clicker {
-            font-size: 6em; /* Увеличено в 2 раза */
+            font-size: 4em;
             cursor: pointer;
-            display: block;
-            margin: 20px auto;
+            display: inline-block;
+            padding: 20px;
+            border: 2px solid black;
         }
-        .button {
+        #score {
+            font-size: 1.5em;
+        }
+        .upgrade-btn {
+            display: block;
+            margin: 10px auto;
             padding: 15px;
             font-size: 1.2em;
             border: none;
@@ -72,25 +64,37 @@
             color: white;
             cursor: pointer;
             border-radius: 5px;
-            margin: 10px;
         }
-        #music-btn {
+        .easter-egg {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 300px;
+            z-index: 5;
         }
-        #exit-btn {
-            display: block;
-            margin: 20px auto;
-            background: black;
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: red;
+            opacity: 0.7;
+            z-index: 9999;
         }
     </style>
     <script>
-        let audio = new Audio('Hotel.mp3');
-        audio.loop = true;
+        let audio, score = 0, clickPower = 1, workers = 0, prestige = 0;
+        let maxClickPower = 5, maxWorkers = 5;
 
         function toggleMusic() {
+            if (!audio) {
+                audio = new Audio('Hotel.mp3');
+                audio.loop = true;
+            }
             if (audio.paused) {
                 audio.play();
             } else {
@@ -110,6 +114,42 @@
             }
         }
 
+        function addChocolate() {
+            score += clickPower;
+            document.getElementById("score").textContent = "Шоколадок: " + score;
+        }
+
+        function buyUpgrade() {
+            let cost = 50;
+            if (score >= cost && clickPower < maxClickPower + prestige * 5) {
+                score -= cost;
+                clickPower++;
+                document.getElementById("score").textContent = "Шоколадок: " + score;
+            }
+        }
+
+        function hireWorker() {
+            let cost = 100;
+            if (score >= cost && workers < maxWorkers + prestige * 5) {
+                score -= cost;
+                workers++;
+                setInterval(() => {
+                    score += workers;
+                    document.getElementById("score").textContent = "Шоколадок: " + score;
+                }, 1000);
+            }
+        }
+
+        function prestigeUpgrade() {
+            if (score >= 1000) {
+                score = 0;
+                clickPower = 1;
+                workers = 0;
+                prestige++;
+                document.getElementById("score").textContent = "Шоколадок: " + score;
+            }
+        }
+
         function showEasterEgg(id, text) {
             let egg = document.getElementById(id);
             egg.textContent = text;
@@ -117,7 +157,23 @@
             egg.style.top = "50%";
             egg.style.left = "50%";
             egg.style.transform = "translate(-50%, -50%)";
-            egg.style.zIndex = "6";
+            addConfetti();
+        }
+
+        function addConfetti() {
+            for (let i = 0; i < 50; i++) {
+                let confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.left = Math.random() * window.innerWidth + "px";
+                confetti.style.top = "-10px";
+                confetti.style.background = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+                document.body.appendChild(confetti);
+                let speed = Math.random() * 3 + 2;
+                let animation = confetti.animate([
+                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)` }
+                ], { duration: speed * 1000 });
+                animation.onfinish = () => confetti.remove();
+            }
         }
 
         document.addEventListener("click", (e) => {
@@ -125,37 +181,30 @@
                 document.querySelectorAll(".easter-egg").forEach(egg => egg.style.display = "none");
             }
         });
-
-        let score = 0;
-        function addChocolate() {
-            score++;
-            document.getElementById("score").textContent = "Шоколадок: " + score;
-        }
     </script>
 </head>
 <body>
-    <button id="music-btn" class="button" onclick="toggleMusic()">Вкл/Выкл</button>
+    <button onclick="toggleMusic()">Вкл/Выкл музыку</button>
+    <button onclick="toggleClicker()">Играть</button>
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="showEasterEgg('egg1', 'Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни..</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="showEasterEgg('egg1', 'Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни...</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
-        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="showEasterEgg('egg2', 'Ойой поаккуратнее, дамочка... 😵')">с</span>унь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
-        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="showEasterEgg('egg3', 'Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
-        <button class="button" onclick="toggleClicker()">🍫 Играть</button>
     </div>
 
     <div id="clicker-container">
         <h2>🍫 Шоколадный кликер</h2>
         <p id="score">Шоколадок: 0</p>
         <p id="choco-clicker" onclick="addChocolate()">🍫</p>
-        <button id="exit-btn" class="button" onclick="toggleClicker()">Назад</button>
+        <button class="upgrade-btn" onclick="buyUpgrade()">Улучшить клик</button>
+        <button class="upgrade-btn" onclick="hireWorker()">Нанять работника</button>
+        <button class="upgrade-btn" onclick="prestigeUpgrade()">Престиж</button>
+        <button onclick="toggleClicker()">Назад</button>
     </div>
 
     <div id="egg1" class="easter-egg"></div>
-    <div id="egg2" class="easter-egg"></div>
-    <div id="egg3" class="easter-egg"></div>
 </body>
-</html>
+</html
