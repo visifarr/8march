@@ -17,7 +17,27 @@
             position: relative;
             overflow: hidden;
         }
+        #code-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        #code-input {
+            font-size: 1.5em;
+            padding: 10px;
+            text-align: center;
+        }
         .container {
+            display: none;
             background: rgba(255, 255, 255, 0.5);
             padding: 20px;
             border-radius: 10px;
@@ -41,31 +61,15 @@
             font-weight: bold;
             color: #d63384;
         }
-        #message {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            font-size: 1.4em;
-            color: #333;
-            z-index: 2;
-        }
         .ps {
             font-size: 0.9em;
             color: #666;
             margin-top: 20px;
             font-style: italic;
         }
-        #music-btn {
+        #music-btn, #choco-btn {
             position: fixed;
             top: 10px;
-            right: 10px;
             background: rgba(0, 0, 0, 0.7);
             color: white;
             border: none;
@@ -74,22 +78,31 @@
             border-radius: 5px;
             z-index: 3;
         }
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: red;
-            opacity: 0.7;
-            border-radius: 50%;
-            animation: fall linear infinite;
+        #music-btn { right: 10px; }
+        #choco-btn { left: 10px; }
+        #clicker-container {
+            display: none;
+            text-align: center;
         }
-        @keyframes fall {
-            from { transform: translateY(-10vh) rotate(0); }
-            to { transform: translateY(100vh) rotate(360deg); }
+        #choco-clicker {
+            font-size: 3em;
+            cursor: pointer;
+        }
+        #score {
+            font-size: 1.5em;
         }
     </style>
     <script>
-        let audio;
+        let audio, score = 0;
+
+        function checkCode() {
+            let input = document.getElementById("code-input").value;
+            if (input === "11524") {
+                document.getElementById("code-screen").style.display = "none";
+                document.getElementById("content").style.display = "block";
+            }
+        }
+
         function toggleMusic() {
             if (!audio) {
                 audio = new Audio('Hotel.mp3');
@@ -102,51 +115,50 @@
             }
         }
 
-        function showMessage(message) {
-            let messageBox = document.getElementById("message");
-            messageBox.innerHTML = message;
-            messageBox.style.display = "block";
-            launchConfetti();
-        }
-
-        function hideMessage() {
-            document.getElementById("message").style.display = "none";
-        }
-
-        function launchConfetti() {
-            for (let i = 0; i < 30; i++) {
-                let confetti = document.createElement("div");
-                confetti.classList.add("confetti");
-                confetti.style.left = Math.random() * 100 + "vw";
-                confetti.style.top = "-10vh";
-                confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
-                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 3000);
+        function toggleClicker() {
+            let content = document.getElementById("content");
+            let clicker = document.getElementById("clicker-container");
+            if (clicker.style.display === "none") {
+                content.style.display = "none";
+                clicker.style.display = "block";
+            } else {
+                clicker.style.display = "none";
+                content.style.display = "block";
             }
         }
 
-        document.addEventListener("click", function(event) {
-            if (!event.target.classList.contains("highlight")) {
-                hideMessage();
-            }
-        });
+        function addChocolate() {
+            score++;
+            document.getElementById("score").textContent = "Шоколадок: " + score;
+        }
     </script>
 </head>
 <body>
-    <button id="music-btn" onclick="toggleMusic()">🎵 Вкл/Выкл музыку</button>
+    <div id="code-screen">
+        <h2>Введите код</h2>
+        <input id="code-input" type="password" maxlength="5">
+        <button onclick="checkCode()">ОК</button>
+    </div>
 
-    <div class="container">
+    <button id="music-btn" onclick="toggleMusic()">🎵 Вкл/Выкл музыку</button>
+    <button id="choco-btn" onclick="toggleClicker()">🍫</button>
+
+    <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="showMessage('Ой, ты нашла меня... Ну и ладно... Главное, я люблю тебя!')">П</span>локсе, и это было одним из самых лучших событий в моей жизни..</p>
-        <p>Я ни о чём не сожалею и верю, что у нас всё получится, если конечно мы будем стараться:3.</p>
-        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="showMessage('Ойой поаккуратнее, дамочка... я ослеплён твоей красотой 😵')">с</span>унь!^^</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="alert('Ой, ты нашла меня... Главное, я люблю тебя!')">П</span>локсе, и это было одним из лучших событий в моей жизни..</p>
+        <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
+        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="alert('Ойой поаккуратнее, дамочка... 😵')">с</span>унь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
-        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="showMessage('Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
+        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="alert('Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
         <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
     </div>
 
-    <div id="message"></div>
+    <div id="clicker-container">
+        <h2>🍫 Шоколадный кликер</h2>
+        <p id="score">Шоколадок: 0</p>
+        <p id="choco-clicker" onclick="addChocolate()">🍫</p>
+        <button onclick="toggleClicker()">Назад</button>
+    </div>
 </body>
 </html>
