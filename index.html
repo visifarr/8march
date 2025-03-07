@@ -52,29 +52,20 @@
         .highlight {
             cursor: pointer;
             font-weight: bold;
-            color: white;
-            background-color: #d63384;
-            padding: 2px 5px;
-            border-radius: 3px;
+            color: #d63384;
         }
-        #music-btn, #choco-btn {
-            position: fixed;
-            top: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            padding: 20px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 5px;
-            z-index: 3;
+        .ps {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 20px;
+            font-style: italic;
         }
-        #music-btn { right: 10px; }
-        #choco-btn { left: 10px; }
         #clicker-container {
             display: none;
             text-align: center;
             background: white;
+            background-image: linear-gradient(45deg, red 25%, transparent 25%, transparent 50%, red 50%, red 75%, transparent 75%, transparent);
+            background-size: 50px 50px;
             position: fixed;
             top: 0;
             left: 0;
@@ -85,29 +76,29 @@
         #choco-clicker {
             font-size: 3em;
             cursor: pointer;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100px;
             height: 100px;
-            line-height: 100px;
-            border: 3px solid #d63384;
-            display: inline-block;
-            text-align: center;
-            margin-top: auto;
-        }
-        #score {
-            font-size: 1.5em;
+            background: #d63384;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
         }
         .upgrade-btn {
             display: block;
-            width: 200px;
-            height: 50px;
-            font-size: 1.2em;
             margin: 15px auto;
-            padding: 10px;
+            padding: 15px;
             border: none;
             background: #d63384;
             color: white;
             cursor: pointer;
             border-radius: 5px;
+            font-size: 1.2em;
+            width: 200px;
         }
         .easter-egg {
             position: fixed;
@@ -115,15 +106,18 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            display: none;
             font-size: 1.2em;
             text-align: center;
             max-width: 300px;
             z-index: 5;
+            color: black;
+            border: 2px solid #d63384;
+            display: none;
         }
     </style>
     <script>
-        let audio, score = 0, clickPower = 1, workers = 0, prestiges = 0;
+        let audio, score = 0, clickPower = 1, workers = 0, prestige = 0;
+        let maxClickUpgrade = 5, maxWorkers = 5;
 
         function checkCode() {
             let input = document.getElementById("code-input").value;
@@ -133,33 +127,42 @@
             }
         }
 
-        function toggleMusic() {
-            if (!audio) {
-                audio = new Audio('Hotel.mp3');
-                audio.loop = true;
-            }
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
-        }
-
-        function toggleClicker() {
-            let content = document.getElementById("content");
-            let clicker = document.getElementById("clicker-container");
-            if (clicker.style.display === "none") {
-                content.style.display = "none";
-                clicker.style.display = "block";
-            } else {
-                clicker.style.display = "none";
-                content.style.display = "block";
-            }
-        }
-
         function addChocolate() {
             score += clickPower;
-            document.getElementById("score").textContent = "Шоколадок: " + score;
+            updateScore();
+        }
+
+        function buyUpgrade() {
+            if (score >= 100 && clickPower < maxClickUpgrade) {
+                score -= 100;
+                clickPower++;
+                updateScore();
+            }
+        }
+
+        function hireWorker() {
+            if (score >= 200 && workers < maxWorkers) {
+                score -= 200;
+                workers++;
+                setInterval(() => {
+                    score++;
+                    updateScore();
+                }, 1000);
+            }
+        }
+
+        function prestigeReset() {
+            if (score >= 1000) {
+                score = 0;
+                clickPower = 1;
+                workers = 0;
+                prestige++;
+                updateScore();
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("score").textContent = `Шоколадок: ${score} | Престиж: ${prestige}`;
         }
 
         function showEasterEgg(id, text) {
@@ -171,6 +174,12 @@
             egg.style.transform = "translate(-50%, -50%)";
             egg.style.zIndex = "6";
         }
+
+        document.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("highlight") && !e.target.classList.contains("easter-egg")) {
+                document.querySelectorAll(".easter-egg").forEach(egg => egg.style.display = "none");
+            }
+        });
     </script>
 </head>
 <body>
@@ -179,9 +188,6 @@
         <input id="code-input" type="password" maxlength="5">
         <button onclick="checkCode()">ОК</button>
     </div>
-
-    <button id="music-btn" onclick="toggleMusic()">🎵 Вкл/Выкл музыку</button>
-    <button id="choco-btn" onclick="toggleClicker()">🍫</button>
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
@@ -194,10 +200,11 @@
     </div>
 
     <div id="clicker-container">
-        <h2>🍫 Шоколадный кликер</h2>
         <p id="score">Шоколадок: 0</p>
         <div id="choco-clicker" onclick="addChocolate()">🍫</div>
-        <button onclick="toggleClicker()">Назад</button>
+        <button class="upgrade-btn" onclick="buyUpgrade()">+1 🍫 (100)</button>
+        <button class="upgrade-btn" onclick="hireWorker()">👥 Работник (200)</button>
+        <button class="upgrade-btn" onclick="prestigeReset()">✨ Престиж (1000)</button>
     </div>
 
     <div id="egg1" class="easter-egg"></div>
