@@ -17,25 +17,6 @@
             position: relative;
             overflow: hidden;
         }
-        #code-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-        #code-input {
-            font-size: 1.5em;
-            padding: 10px;
-            text-align: center;
-        }
         .container {
             background: rgba(255, 255, 255, 0.5);
             padding: 20px;
@@ -46,61 +27,10 @@
             position: relative;
             z-index: 1;
         }
-        h1 { font-size: 2.5em; color: #d63384; }
-        p { font-size: 1.2em; color: #333; line-height: 1.5; }
         .highlight {
             cursor: pointer;
             font-weight: bold;
             color: #d63384;
-        }
-        .button {
-            padding: 15px;
-            border: none;
-            background: #d63384;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1.2em;
-            margin: 10px;
-        }
-        #clicker-container {
-            display: none;
-            text-align: center;
-            background: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding-top: 50px;
-            background: repeating-linear-gradient(135deg, white, white 10px, #d63384 10px, #d63384 12px);
-        }
-        #choco-clicker {
-            font-size: 3em;
-            cursor: pointer;
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 100px;
-            background: #d63384;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 10px;
-        }
-        .upgrade-btn {
-            display: block;
-            margin: 15px auto;
-            padding: 15px;
-            border: none;
-            background: #d63384;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1.2em;
-            width: 200px;
         }
         .easter-egg {
             position: fixed;
@@ -112,74 +42,72 @@
             text-align: center;
             max-width: 300px;
             z-index: 5;
-            color: black;
-            border: 2px solid #d63384;
             display: none;
+            color: red;
+        }
+        #clicker-container {
+            display: none;
+            text-align: center;
+            background: white;
+            background-image: linear-gradient(45deg, red 25%, transparent 25%, transparent 50%, red 50%, red 75%, transparent 75%, transparent);
+            background-size: 50px 50px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding-top: 50px;
+        }
+        #choco-clicker {
+            font-size: 6em; /* Увеличено в 2 раза */
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+        }
+        .button {
+            padding: 15px;
+            font-size: 1.2em;
+            border: none;
+            background: #d63384;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        #music-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        #exit-btn {
+            display: block;
+            margin: 20px auto;
+            background: black;
         }
     </style>
     <script>
-        let audio = new Audio('music.mp3'), playing = false;
-        let score = 0, clickPower = 1, workers = 0, prestige = 0;
-        let maxClickUpgrade = 5, maxWorkers = 5;
-
-        function checkCode() {
-            let input = document.getElementById("code-input").value;
-            if (input === "11524") {
-                document.getElementById("code-screen").style.display = "none";
-                document.getElementById("content").style.display = "block";
-            }
-        }
+        let audio = new Audio('Hotel.mp3');
+        audio.loop = true;
 
         function toggleMusic() {
-            if (playing) {
-                audio.pause();
-            } else {
+            if (audio.paused) {
                 audio.play();
-            }
-            playing = !playing;
-        }
-
-        function openClicker() {
-            document.getElementById("content").style.display = "none";
-            document.getElementById("clicker-container").style.display = "block";
-        }
-
-        function addChocolate() {
-            score += clickPower;
-            updateScore();
-        }
-
-        function buyUpgrade() {
-            if (score >= 100 && clickPower < maxClickUpgrade) {
-                score -= 100;
-                clickPower++;
-                updateScore();
+            } else {
+                audio.pause();
             }
         }
 
-        function hireWorker() {
-            if (score >= 200 && workers < maxWorkers) {
-                score -= 200;
-                workers++;
-                setInterval(() => {
-                    score++;
-                    updateScore();
-                }, 1000);
+        function toggleClicker() {
+            let content = document.getElementById("content");
+            let clicker = document.getElementById("clicker-container");
+            if (clicker.style.display === "none") {
+                content.style.display = "none";
+                clicker.style.display = "block";
+            } else {
+                clicker.style.display = "none";
+                content.style.display = "block";
             }
-        }
-
-        function prestigeReset() {
-            if (score >= 1000) {
-                score = 0;
-                clickPower = 1;
-                workers = 0;
-                prestige++;
-                updateScore();
-            }
-        }
-
-        function updateScore() {
-            document.getElementById("score").textContent = `Шоколадок: ${score} | Престиж: ${prestige}`;
         }
 
         function showEasterEgg(id, text) {
@@ -193,18 +121,20 @@
         }
 
         document.addEventListener("click", (e) => {
-            if (!e.target.classList.contains("highlight") && !e.target.classList.contains("easter-egg")) {
+            if (!e.target.classList.contains("highlight")) {
                 document.querySelectorAll(".easter-egg").forEach(egg => egg.style.display = "none");
             }
         });
+
+        let score = 0;
+        function addChocolate() {
+            score++;
+            document.getElementById("score").textContent = "Шоколадок: " + score;
+        }
     </script>
 </head>
 <body>
-    <div id="code-screen">
-        <h2>Введите код</h2>
-        <input id="code-input" type="password" maxlength="5">
-        <button onclick="checkCode()">ОК</button>
-    </div>
+    <button id="music-btn" class="button" onclick="toggleMusic()">Вкл/Выкл</button>
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
@@ -214,16 +144,14 @@
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
         <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="showEasterEgg('egg3', 'Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
-        <button class="button" onclick="toggleMusic()">🎵 Музыка</button>
-        <button class="button" onclick="openClicker()">🎮 Кликер</button>
+        <button class="button" onclick="toggleClicker()">🍫 Играть</button>
     </div>
 
     <div id="clicker-container">
+        <h2>🍫 Шоколадный кликер</h2>
         <p id="score">Шоколадок: 0</p>
-        <div id="choco-clicker" onclick="addChocolate()">🍫</div>
-        <button class="upgrade-btn" onclick="buyUpgrade()">+1 🍫 (100)</button>
-        <button class="upgrade-btn" onclick="hireWorker()">👥 Работник (200)</button>
-        <button class="upgrade-btn" onclick="prestigeReset()">✨ Престиж (1000)</button>
+        <p id="choco-clicker" onclick="addChocolate()">🍫</p>
+        <button id="exit-btn" class="button" onclick="toggleClicker()">Назад</button>
     </div>
 
     <div id="egg1" class="easter-egg"></div>
