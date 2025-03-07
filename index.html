@@ -15,6 +15,7 @@
             font-family: Arial, sans-serif;
             padding: 20px;
             transition: background-image 1s ease-in-out;
+            overflow: hidden;
         }
         .container {
             background: rgba(255, 255, 255, 0.5);
@@ -41,34 +42,13 @@
             color: #b0b0b0; /* Бело-серый цвет */
         }
         .highlight::after {
-            content: "";
-            width: 8px;
-            height: 8px;
-            background-color: red;
-            border-radius: 50%;
+            content: " ×";
+            font-size: 1em;
+            color: red;
+            font-weight: bold;
             position: absolute;
             top: -5px;
             right: -10px;
-            animation: blink 1.5s infinite alternate;
-        }
-        @keyframes blink {
-            from { opacity: 1; }
-            to { opacity: 0.5; }
-        }
-        #envelope {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3em;
-            color: red;
-            cursor: pointer;
-            font-weight: bold;
-            background: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         #message {
             display: none;
@@ -83,6 +63,16 @@
             text-align: center;
             font-size: 1.4em;
             color: #333;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
         }
         .ps {
             font-size: 0.9em;
@@ -90,44 +80,83 @@
             margin-top: 20px;
             font-style: italic;
         }
+        #music-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: red;
+            opacity: 0.7;
+            border-radius: 50%;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            from { transform: translateY(-10vh) rotate(0); }
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
     </style>
     <script>
-        function showEnvelope(message) {
-            let envelope = document.getElementById("envelope");
-            envelope.setAttribute("data-message", message);
-            envelope.style.display = "block";
+        let audio;
+        function toggleMusic() {
+            if (!audio) {
+                audio = new Audio('Hotel.mp3');
+                audio.loop = true;
+            }
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
         }
 
-        function openMessage() {
-            let envelope = document.getElementById("envelope");
-            let message = document.getElementById("message");
-            message.innerText = envelope.getAttribute("data-message");
-            message.style.display = "block";
+        function showMessage(message) {
+            let messageBox = document.getElementById("message");
+            messageBox.innerHTML = `<span class="close-btn" onclick="hideMessage()">×</span>${message}`;
+            messageBox.style.display = "block";
+            launchConfetti();
         }
 
         function hideMessage() {
             document.getElementById("message").style.display = "none";
         }
+
+        function launchConfetti() {
+            for (let i = 0; i < 30; i++) {
+                let confetti = document.createElement("div");
+                confetti.classList.add("confetti");
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
+                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
     </script>
 </head>
 <body>
-    <audio autoplay loop>
-        <source src="Hotel.mp3" type="audio/mpeg">
-    </audio>
+    <button id="music-btn" onclick="toggleMusic()">🎵 Вкл/Выкл музыку</button>
 
     <div class="container">
         <h1>С 8 Марта!</h1>
-        <p>Мы познакомились в Ро<span class="highlight" onclick="showEnvelope('Ой, ты нашла меня... Ну и ладно... Главное, я люблю тебя!')">П</span>локсе, и это было одним из самых лучших событий в моей жизни..</p>
+        <p>Мы познакомились в Ро<span class="highlight" onclick="showMessage('Ой, ты нашла меня... Ну и ладно... Главное, я люблю тебя!')">П</span>локсе, и это было одним из самых лучших событий в моей жизни..</p>
         <p>Я ни о чём не сожалею и верю, что у нас всё получится, если конечно мы будем стараться:3.</p>
-        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="showEnvelope('Ойой поаккуратнее, дамочка... я ослеплён твоей красотой 😵')">с</span>унь!^^</p>
+        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight" onclick="showMessage('Ойой поаккуратнее, дамочка... я ослеплён твоей красотой 😵')">с</span>унь!^^</p>
         <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
-        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="showEnvelope('Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
+        <p>Поэтому не покидай меня и давай стара<span class="highlight" onclick="showMessage('Йоу, что за бомба-красотка, еее... 🫠')">т</span>ься дальше!</p>
         <p><b>С 8 марта, дорогуша моя! :33</b></p>
         <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
     </div>
 
-    <div id="envelope" onclick="openMessage()">×</div>
-
-    <div id="message" onclick="hideMessage()"></div>
+    <div id="message"></div>
 </body>
 </html>
