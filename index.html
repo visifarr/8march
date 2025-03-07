@@ -37,13 +37,35 @@
             text-align: center;
         }
         .container {
-            background: rgba(255, 255, 255, 0.5);
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease-in-out;
             max-width: 600px;
             position: relative;
             z-index: 1;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #d63384;
+        }
+        p {
+            font-size: 1.2em;
+            color: #333;
+            line-height: 1.5;
+        }
+        .highlight {
+            cursor: pointer;
+            font-weight: bold;
+            color: #d63384;
+        }
+        .ps {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 20px;
+            font-style: italic;
         }
         #music-btn, #choco-btn {
             position: fixed;
@@ -51,11 +73,10 @@
             background: rgba(0, 0, 0, 0.7);
             color: white;
             border: none;
-            padding: 15px;
+            padding: 10px;
             cursor: pointer;
             border-radius: 5px;
             z-index: 3;
-            font-size: 1.2em;
         }
         #music-btn { right: 10px; }
         #choco-btn { left: 10px; }
@@ -64,58 +85,57 @@
             text-align: center;
             background: white;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 10;
-            border: 5px solid red;
-            background-image: linear-gradient(45deg, transparent 24%, red 25%, red 26%, transparent 27%, transparent 74%, red 75%, red 76%, transparent 77%);
-            background-size: 50px 50px;
+            z-index: 11;
+        }
+        #clicker-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('шоколадный_фон.png') repeat;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        .grid {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: calc(100% - 100px);
+            background: repeating-linear-gradient(0deg, red, red 2px, transparent 2px, transparent 50px),
+                        repeating-linear-gradient(90deg, red, red 2px, transparent 2px, transparent 50px);
+            z-index: 0;
         }
         #choco-clicker {
-            font-size: 4em;
+            font-size: 3em;
             cursor: pointer;
-            margin-top: 20px;
+            position: relative;
+            z-index: 2;
         }
         #score {
-            font-size: 2em;
+            font-size: 1.5em;
             color: black;
-        }
-        .easter-egg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-            z-index: 20;
-            font-size: 1.2em;
-            font-weight: bold;
-            text-align: center;
-            border: 2px solid black;
-        }
-        #upgrade-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
         }
         .upgrade-btn {
-            font-size: 1.2em;
+            margin-top: 10px;
             padding: 10px;
-            cursor: pointer;
-            background: red;
+            background: #ff4d4d;
             color: white;
             border: none;
+            cursor: pointer;
+            font-size: 1em;
             border-radius: 5px;
         }
     </style>
     <script>
-        let audio, score = 0, chocoPower = 1, workers = 0, workerPower = 1;
+        let audio, score = 0, clickValue = 1, autoClickers = 0;
 
         function checkCode() {
             let input = document.getElementById("code-input").value;
@@ -142,9 +162,7 @@
             let clicker = document.getElementById("clicker-container");
             if (clicker.style.display === "none") {
                 content.style.display = "none";
-                clicker.style.display = "flex";
-                clicker.style.flexDirection = "column";
-                clicker.style.alignItems = "center";
+                clicker.style.display = "block";
             } else {
                 clicker.style.display = "none";
                 content.style.display = "block";
@@ -152,48 +170,21 @@
         }
 
         function addChocolate() {
-            score += chocoPower;
+            score += clickValue;
             document.getElementById("score").textContent = "Шоколадок: " + score;
         }
 
-        function buyUpgrade() {
-            if (score >= 10) {
+        function buyUpgrade(type) {
+            if (type === "click" && score >= 10) {
                 score -= 10;
-                chocoPower++;
-                document.getElementById("score").textContent = "Шоколадок: " + score;
-            }
-        }
-
-        function buyWorker() {
-            if (score >= 20) {
+                clickValue++;
+            } else if (type === "auto" && score >= 20) {
                 score -= 20;
-                workers++;
-                document.getElementById("score").textContent = "Шоколадок: " + score;
+                autoClickers++;
+                setInterval(() => { score++; document.getElementById("score").textContent = "Шоколадок: " + score; }, 1000);
             }
-        }
-
-        function buyWorkerUpgrade() {
-            if (score >= 30) {
-                score -= 30;
-                workerPower++;
-                document.getElementById("score").textContent = "Шоколадок: " + score;
-            }
-        }
-
-        setInterval(() => {
-            score += workers * workerPower;
             document.getElementById("score").textContent = "Шоколадок: " + score;
-        }, 1000);
-
-        function showEasterEgg(id) {
-            let egg = document.getElementById(id);
-            egg.style.display = "block";
         }
-
-        document.addEventListener("click", function () {
-            let eggs = document.querySelectorAll(".easter-egg");
-            eggs.forEach(egg => egg.style.display = "none");
-        });
     </script>
 </head>
 <body>
@@ -208,21 +199,23 @@
 
     <div id="content" class="container">
         <h1>С 8 Марта!</h1>
-        <p>Поздравляю тебя с этим замечательным днем! Пусть шоколадок в жизни будет столько же, сколько ты нажмешь!</p>
+        <p>Мы познакомились в Ро<span class="highlight">П</span>локсе, и это было одним из лучших событий в моей жизни.</p>
+        <p>Я ни о чём не сожалею и верю, что у нас всё получится.</p>
+        <p>Надеюсь, что мы сможем встретиться, ки<span class="highlight">с</span>унь!^^</p>
+        <p>Ты важна для меня, и я хочу, чтобы мы были вместе.</p>
+        <p>Поэтому не покидай меня и давай стара<span class="highlight">т</span>ься дальше!</p>
+        <p><b>С 8 марта, дорогуша моя! :33</b></p>
+        <p class="ps">Ps: выглядит кринжово, но это пока что всё, что я могу... доступа до ПК нету ;)</p>
     </div>
 
     <div id="clicker-container">
-        <h2>🍫 Шоколадный кликер</h2>
+        <div class="grid"></div>
+        <h2>Завод Шоколадок Малышки</h2>
         <p id="score">Шоколадок: 0</p>
         <p id="choco-clicker" onclick="addChocolate()">🍫</p>
-        <div id="upgrade-container">
-            <button class="upgrade-btn" onclick="buyUpgrade()">(2+)</button>
-            <button class="upgrade-btn" onclick="buyWorker()">(👥)</button>
-            <button class="upgrade-btn" onclick="buyWorkerUpgrade()">(👥²+)</button>
-        </div>
+        <button class="upgrade-btn" onclick="buyUpgrade('click')">2+ 🍫</button>
+        <button class="upgrade-btn" onclick="buyUpgrade('auto')">👥 Автоклик</button>
         <button onclick="toggleClicker()">Назад</button>
     </div>
-
-    <div id="egg1" class="easter-egg">Ой, ты нашла меня...</div>
 </body>
 </html>
